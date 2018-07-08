@@ -3,6 +3,8 @@ package ru.bakhuss.parser.parser;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.bakhuss.parser.ParserApplication;
 import ru.bakhuss.parser.dao.AuthorDao;
 import ru.bakhuss.parser.model.Author;
@@ -11,6 +13,7 @@ import ru.bakhuss.parser.service.AuthorService;
 import java.io.IOException;
 
 public class LiveLib {
+    private final Logger log = LoggerFactory.getLogger(LiveLib.class);
 
     public Document getDocument(String writer) throws IOException {
         String url;
@@ -44,6 +47,7 @@ public class LiveLib {
                 String authId = locUrl[locUrl.length - 1].split("-")[0];
 
                 if (authId.contains("ratelimitcaptcha")) {
+                    log.info("ratelimitcaptcha: wait 5 min");
                     try {
                         Thread.sleep(300000);
                     } catch (InterruptedException e) {
@@ -54,11 +58,11 @@ public class LiveLib {
                 }
 
                 if (authorDao.existsByLiveLibId(Long.parseLong(authId))) {
-                    System.out.println("liveLibId: " + authId + " exists");
+                    log.info("liveLibId: " + authId + " exists");
                     continue;
                 }
                 if (authorDao.existsById(Long.parseLong(authId))) {
-                    System.out.println("liveLibId: " + authId + " exists");
+                    log.info("liveLibId: " + authId + " exists");
                     continue;
                 }
 
@@ -70,11 +74,11 @@ public class LiveLib {
                 AuthorService authorService = ParserApplication.context.getBean(AuthorService.class);
                 System.out.println(authorService.setAuthorHtml(author));
             } catch (HttpStatusException ex) {
-                System.out.println("id: " + i + "; status code: " + ex.getStatusCode());
+                log.error("id: " + i + "; status code: " + ex.getStatusCode());
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("IOException error" + e);
             }
         }
-        System.out.println(authorDao.findFirstByOrderByIdDesc().getId());
+        log.info(authorDao.findFirstByOrderByIdDesc().getId().toString());
     }
 }
