@@ -42,6 +42,17 @@ public class LiveLib {
                 Document doc = Jsoup.connect(url).get();
                 String[] locUrl = doc.location().split("/");
                 String authId = locUrl[locUrl.length - 1].split("-")[0];
+
+                if (authId.contains("ratelimitcaptcha")) {
+                    try {
+                        Thread.sleep(300000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    i--;
+                    continue;
+                }
+
                 if (authorDao.existsByLiveLibId(Long.parseLong(authId))) {
                     System.out.println("liveLibId: " + authId + " exists");
                     continue;
