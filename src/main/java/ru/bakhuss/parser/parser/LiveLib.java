@@ -25,7 +25,6 @@ public class LiveLib {
 
     public void getAuthorHtml() {
         AuthorDao authorDao = ParserApplication.context.getBean(AuthorDao.class);
-        System.out.println(authorDao.findFirstByOrderByIdDesc());
         Long startId = 1L;
         Author startAuth = authorDao.findFirstByOrderByIdDesc();
         if (startAuth != null)
