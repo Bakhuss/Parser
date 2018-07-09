@@ -47,9 +47,9 @@ public class LiveLib {
                 String authId = locUrl[locUrl.length - 1].split("-")[0];
 
                 if (authId.contains("ratelimitcaptcha")) {
-                    log.info("i: " + i + "; ratelimitcaptcha: wait 20 min");
+                    log.info("i: " + i + "; ratelimitcaptcha: wait 5 min");
                     try {
-                        Thread.sleep(1200000);
+                        Thread.sleep(300000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
