@@ -34,7 +34,7 @@ public class LiveLib {
             startId = (startAuth.getId() + 1);
         for (Long i = startId; i < 500000; i++) {
             try {
-                Thread.sleep(35000);
+                Thread.sleep(60000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -47,9 +47,9 @@ public class LiveLib {
                 String authId = locUrl[locUrl.length - 1].split("-")[0];
 
                 if (authId.contains("ratelimitcaptcha")) {
-                    log.info("i: " + i + "; ratelimitcaptcha: wait 5 min");
+                    log.info("i: " + i + "; ratelimitcaptcha: wait 20 min");
                     try {
-                        Thread.sleep(300000);
+                        Thread.sleep(1200000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
