@@ -75,6 +75,16 @@ public class LiveLib {
                 System.out.println(authorService.setAuthorHtml(author));
             } catch (HttpStatusException ex) {
                 log.error("id: " + i + "; status code: " + ex.getStatusCode());
+                if (ex.getStatusCode() == 503) {
+                    log.error("Wait 5 min");
+                    try {
+                        Thread.sleep(300000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    i--;
+                    continue;
+                }
             } catch (IOException e) {
                 log.error("IOException error" + e);
             }
