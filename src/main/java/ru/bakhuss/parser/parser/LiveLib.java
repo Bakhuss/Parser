@@ -87,8 +87,39 @@ public class LiveLib {
                 }
             } catch (IOException e) {
                 log.error("IOException error" + e);
+                i--;
+                continue;
             }
         }
         log.info(authorDao.findFirstByOrderByIdDesc().getId().toString());
+    }
+
+    public void getBookHtml() {
+        int writer = 1;
+        int page = 1;
+        String url;
+        url = "https://www.livelib.ru/author/" + writer + "/works/listview/smalllist/~" + page;
+        url = "https://www.livelib.ru/author/" + writer + "/alphabet/listview/smalllist/~" + page;
+
+        try {
+
+            Document doc = Jsoup.connect(url).get();
+            String[] locUrl = doc.location().split("/");
+            String authId = locUrl[locUrl.length - 1].split("-")[0];
+
+
+        } catch (HttpStatusException ex) {
+            log.error("id: " + page + "; status code: " + ex.getStatusCode());
+            if (ex.getStatusCode() == 503) {
+                log.error("Wait 5 min");
+                try {
+                    Thread.sleep(300000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            log.error("IOException error" + e);
+        }
     }
 }
