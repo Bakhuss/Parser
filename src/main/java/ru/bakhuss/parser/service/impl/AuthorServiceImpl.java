@@ -31,4 +31,10 @@ public class AuthorServiceImpl implements AuthorService {
         }
         return true;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Long getAuthorCount() {
+        return authorDao.count();
+    }
 }

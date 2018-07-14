@@ -11,6 +11,8 @@ import ru.bakhuss.parser.model.Author;
 import ru.bakhuss.parser.service.AuthorService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LiveLib {
     private final Logger log = LoggerFactory.getLogger(LiveLib.class);
@@ -33,6 +35,10 @@ public class LiveLib {
         if (startAuth != null)
             startId = (startAuth.getId() + 1);
         for (Long i = startId; i < 500000; i++) {
+            if (authorDao.existsByLiveLibId(i)) {
+                log.info("liveLibId: " + i + " exists");
+                continue;
+            }
             try {
                 Thread.sleep(60000);
             } catch (InterruptedException e) {
@@ -95,17 +101,34 @@ public class LiveLib {
     }
 
     public void getBookHtml() {
-        int writer = 1;
-        int page = 1;
+        int writer = 268;
+        int page = 2;
         String url;
-        url = "https://www.livelib.ru/author/" + writer + "/works/listview/smalllist/~" + page;
-        url = "https://www.livelib.ru/author/" + writer + "/alphabet/listview/smalllist/~" + page;
+        List<String> urlAdd = new ArrayList<>();
+        urlAdd.add("works");
+        urlAdd.add("alphabet");
+        url = "https://www.livelib.ru/author/"
+                + writer + "/"
+                + urlAdd.get(0)
+                + "/listview/smalllist/~" + page;
 
         try {
+//            Long startId = 1L;
+//            AuthorBookPagesDao abpd = ParserApplication.context.getBean(AuthorBookPagesDao.class);
+//            System.out.println(abpd.count());
+//            if (abpd.count() != 0) {
+//
+//            }
+
+            AuthorDao authorDao = ParserApplication.context.getBean(AuthorDao.class);
+            System.out.println("count: " + authorDao.count());
 
             Document doc = Jsoup.connect(url).get();
             String[] locUrl = doc.location().split("/");
-            String authId = locUrl[locUrl.length - 1].split("-")[0];
+            System.out.println(doc.baseUri());
+            String nextPage = doc.getElementsByAttributeValueContaining("id", "list-page-next")
+                    .attr("id");
+            System.out.println("nextPage: " + nextPage.split("-")[4]);
 
 
         } catch (HttpStatusException ex) {
@@ -120,6 +143,8 @@ public class LiveLib {
             }
         } catch (IOException e) {
             log.error("IOException error" + e);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            System.out.println("Not next page");
         }
     }
 }
