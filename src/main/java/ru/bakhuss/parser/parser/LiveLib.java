@@ -32,15 +32,15 @@ public class LiveLib {
 
     public void getAuthorHtml(Long fromAnd, Long beforeAnd) {
         AuthorDao authorDao = ParserApplication.context.getBean(AuthorDao.class);
-//        Long startId = 1L;
-//        Author startAuth = authorDao.findFirstByOrderByIdDesc();
-//        if (startAuth != null)
-//            startId = (startAuth.getId() + 1);
-//        for (Long i = startId; i < 500000; i++) {
         for (Long i = fromAnd; i <= beforeAnd; i++) {
             if (authorDao.existsByLiveLibId(i)) {
                 log.info("liveLibId: " + i + " exists");
-                emptyAuthor(i);
+                try {
+                    authorDao.save(emptyAuthor(i));
+                } catch (Exception exc) {
+                    log.error("Error saving empty author" + exc);
+                    i--;
+                }
                 continue;
             }
             try {
@@ -102,6 +102,7 @@ public class LiveLib {
                         authorDao.save(emptyAuthor(i));
                     } catch (Exception exc) {
                         log.error("Error saving empty author" + exc);
+                        i--;
                     }
                 }
             } catch (IOException e) {
