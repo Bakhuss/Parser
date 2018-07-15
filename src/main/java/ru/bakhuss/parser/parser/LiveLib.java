@@ -69,7 +69,12 @@ public class LiveLib {
 
                 if (authorDao.existsByLiveLibId(Long.parseLong(authId))) {
                     log.info("liveLibId: " + authId + " exists");
-                    emptyAuthor(i);
+                    try {
+                        authorDao.save(emptyAuthor(i));
+                    } catch (Exception exc) {
+                        log.error("Error saving empty author" + exc);
+                        i--;
+                    }
                     continue;
                 }
                 if (authorDao.existsById(Long.parseLong(authId))) {
