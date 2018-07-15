@@ -15,6 +15,9 @@ import javax.persistence.Version;
 public class AuthorBookPages {
 
     @Id
+    @Column(name = "author_id")
+    private Long authorId;
+
     @Column(name = "author_live_lib_id")
     private Long authorLiveLibId;
 

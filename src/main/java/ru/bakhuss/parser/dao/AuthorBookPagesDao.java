@@ -6,4 +6,5 @@ import ru.bakhuss.parser.model.AuthorBookPages;
 
 @Repository
 public interface AuthorBookPagesDao extends CrudRepository<AuthorBookPages, Long> {
+    AuthorBookPages findFirstByOrderByAuthorIdDesc();
 }

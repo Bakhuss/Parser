@@ -6,8 +6,10 @@ import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.bakhuss.parser.ParserApplication;
+import ru.bakhuss.parser.dao.AuthorBookPagesDao;
 import ru.bakhuss.parser.dao.AuthorDao;
 import ru.bakhuss.parser.model.Author;
+import ru.bakhuss.parser.model.AuthorBookPages;
 import ru.bakhuss.parser.service.AuthorService;
 
 import java.io.IOException;
@@ -28,15 +30,17 @@ public class LiveLib {
         return doc;
     }
 
-    public void getAuthorHtml() {
+    public void getAuthorHtml(Long fromAnd, Long beforeAnd) {
         AuthorDao authorDao = ParserApplication.context.getBean(AuthorDao.class);
-        Long startId = 1L;
-        Author startAuth = authorDao.findFirstByOrderByIdDesc();
-        if (startAuth != null)
-            startId = (startAuth.getId() + 1);
-        for (Long i = startId; i < 500000; i++) {
+//        Long startId = 1L;
+//        Author startAuth = authorDao.findFirstByOrderByIdDesc();
+//        if (startAuth != null)
+//            startId = (startAuth.getId() + 1);
+//        for (Long i = startId; i < 500000; i++) {
+        for (Long i = fromAnd; i <= beforeAnd; i++) {
             if (authorDao.existsByLiveLibId(i)) {
                 log.info("liveLibId: " + i + " exists");
+                emptyAuthor(i);
                 continue;
             }
             try {
@@ -65,6 +69,7 @@ public class LiveLib {
 
                 if (authorDao.existsByLiveLibId(Long.parseLong(authId))) {
                     log.info("liveLibId: " + authId + " exists");
+                    emptyAuthor(i);
                     continue;
                 }
                 if (authorDao.existsById(Long.parseLong(authId))) {
@@ -91,44 +96,74 @@ public class LiveLib {
                     i--;
                     continue;
                 }
+
+                if (ex.getStatusCode() == 404) {
+                    try {
+                        authorDao.save(emptyAuthor(i));
+                    } catch (Exception exc) {
+                        log.error("Error saving empty author" + exc);
+                    }
+                }
             } catch (IOException e) {
                 log.error("IOException error" + e);
                 i--;
                 continue;
             }
         }
-        log.info(authorDao.findFirstByOrderByIdDesc().getId().toString());
+        log.info("end id: " + authorDao.findFirstByOrderByIdDesc().getId().toString());
+    }
+
+    private Author emptyAuthor(Long i) {
+        Author a = new Author();
+        a.setId(i);
+        a.setLiveLibId(null);
+        a.setBaseUrl(null);
+        a.setHtml(null);
+        return a;
     }
 
     public void getBookHtml() {
-        int writer = 268;
-        int page = 2;
+        Long writer = 268L;
+        Long page = 2L;
+        String urlAddition = "";
         String url;
         List<String> urlAdd = new ArrayList<>();
         urlAdd.add("works");
         urlAdd.add("alphabet");
+        urlAddition = urlAdd.get(0);
         url = "https://www.livelib.ru/author/"
                 + writer + "/"
-                + urlAdd.get(0)
+                + urlAddition
                 + "/listview/smalllist/~" + page;
 
         try {
-//            Long startId = 1L;
-//            AuthorBookPagesDao abpd = ParserApplication.context.getBean(AuthorBookPagesDao.class);
-//            System.out.println(abpd.count());
-//            if (abpd.count() != 0) {
-//
-//            }
+            Long startId = 1L;
+            AuthorBookPagesDao abpd = ParserApplication.context.getBean(AuthorBookPagesDao.class);
+            System.out.println(abpd.count());
+            AuthorBookPages startAuthorBookPages = abpd.findFirstByOrderByAuthorIdDesc();
+            if (abpd.count() != 0) {
+                startId = startAuthorBookPages.getAuthorId();
+            }
+            System.out.println("startId: " + startId);
 
-            AuthorDao authorDao = ParserApplication.context.getBean(AuthorDao.class);
-            System.out.println("count: " + authorDao.count());
+            if (startAuthorBookPages != null)
+                if (!startAuthorBookPages.getCheckAllPages()) {
+                    writer = startAuthorBookPages.getAuthorLiveLibId();
+                    urlAddition = startAuthorBookPages.getUrlAddition();
+                    page = startAuthorBookPages.getCurrentPage() + 1;
+                }
+
+//            AuthorDao authorDao = ParserApplication.context.getBean(AuthorDao.class);
+//            System.out.println("count: " + authorDao.count());
+//            System.out.println(authorDao.find(92L).getLiveLibId());
+
 
             Document doc = Jsoup.connect(url).get();
-            String[] locUrl = doc.location().split("/");
-            System.out.println(doc.baseUri());
-            String nextPage = doc.getElementsByAttributeValueContaining("id", "list-page-next")
-                    .attr("id");
-            System.out.println("nextPage: " + nextPage.split("-")[4]);
+//            String[] locUrl = doc.location().split("/");
+//            System.out.println(doc.baseUri());
+//            String nextPage = doc.getElementsByAttributeValueContaining("id", "list-page-next")
+//                    .attr("id");
+//            System.out.println("nextPage: " + nextPage.split("-")[4]);
 
 
         } catch (HttpStatusException ex) {
