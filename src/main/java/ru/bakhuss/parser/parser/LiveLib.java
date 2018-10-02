@@ -129,34 +129,50 @@ public class LiveLib {
     }
 
     public void getBookHtml() {
-        Long writer = 268L;
-        Long page = 2L;
-        String urlAddition = "";
+
+        Long authorId = 1L;
+        Long liveLibId = 1L;
+        Long page = 1L;
+        String urlAddition = "works";
         String url;
+
+        AuthorBookPagesDao abpd = ParserApplication.context.getBean(AuthorBookPagesDao.class);
+        System.out.println(abpd.count());
+        AuthorBookPages authorBookPages = abpd.findFirstByOrderByAuthorIdDesc();
+        if (abpd.count() != 0) {
+            authorId = authorBookPages.getAuthorId();
+            if (!authorBookPages.getCheckAllPages()) {
+                liveLibId = authorBookPages.getAuthorLiveLibId();
+            }
+        }
+        System.out.println("authorId: " + authorId);
+        System.out.println("liveLibId: " + liveLibId);
+
         List<String> urlAdd = new ArrayList<>();
         urlAdd.add("works");
         urlAdd.add("alphabet");
         urlAddition = urlAdd.get(0);
         url = "https://www.livelib.ru/author/"
-                + writer + "/"
+                + liveLibId + "/"
                 + urlAddition
                 + "/listview/smalllist/~" + page;
+        System.out.println(url);
 
         try {
-            Long startId = 1L;
-            AuthorBookPagesDao abpd = ParserApplication.context.getBean(AuthorBookPagesDao.class);
-            System.out.println(abpd.count());
-            AuthorBookPages startAuthorBookPages = abpd.findFirstByOrderByAuthorIdDesc();
-            if (abpd.count() != 0) {
-                startId = startAuthorBookPages.getAuthorId();
-            }
-            System.out.println("startId: " + startId);
+//            Long authorId = 1L;
+//            AuthorBookPagesDao abpd = ParserApplication.context.getBean(AuthorBookPagesDao.class);
+//            System.out.println(abpd.count());
+//            AuthorBookPages authorBookPages = abpd.findFirstByOrderByAuthorIdDesc();
+//            if (abpd.count() != 0) {
+//                authorId = authorBookPages.getAuthorId();
+//            }
+//            System.out.println("authorId: " + authorId);
 
-            if (startAuthorBookPages != null)
-                if (!startAuthorBookPages.getCheckAllPages()) {
-                    writer = startAuthorBookPages.getAuthorLiveLibId();
-                    urlAddition = startAuthorBookPages.getUrlAddition();
-                    page = startAuthorBookPages.getCurrentPage() + 1;
+            if (authorBookPages != null)
+                if (!authorBookPages.getCheckAllPages()) {
+                    writer = authorBookPages.getAuthorLiveLibId();
+                    urlAddition = authorBookPages.getUrlAddition();
+                    page = authorBookPages.getCurrentPage() + 1;
                 }
 
 //            AuthorDao authorDao = ParserApplication.context.getBean(AuthorDao.class);

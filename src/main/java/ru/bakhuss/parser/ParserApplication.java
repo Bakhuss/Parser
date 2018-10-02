@@ -3,11 +3,12 @@ package ru.bakhuss.parser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import ru.bakhuss.parser.parser.LiveLib;
 
 @SpringBootApplication
-public class ParserApplication {
+public class ParserApplication extends SpringBootServletInitializer {
 
     public static ApplicationContext context;
 
@@ -18,6 +19,6 @@ public class ParserApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ParserApplication.class, args);
-        new LiveLib().getAuthorHtml(1728L, 2000L);
+        new LiveLib().getBookHtml();
     }
 }
