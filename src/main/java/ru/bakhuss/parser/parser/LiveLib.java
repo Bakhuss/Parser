@@ -6,8 +6,10 @@ import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.bakhuss.parser.ParserApplication;
+import ru.bakhuss.parser.dao.AuthorBookPagesDao;
 import ru.bakhuss.parser.dao.AuthorDao;
 import ru.bakhuss.parser.model.Author;
+import ru.bakhuss.parser.model.AuthorBookPages;
 import ru.bakhuss.parser.service.AuthorService;
 
 import java.io.IOException;
@@ -123,17 +125,20 @@ public class LiveLib {
         a.setHtml(null);
         return a;
     }
-/*
-    public void getBookHtml() {
+
+    public void getBookBaseUrl(Long fromAnd, Long beforeAnd) {
 
         Long authorId = 1L;
         Long liveLibId = 1L;
         Long currentPage = 1L;
         String urlAddition = "works";
-        String url;
+        String url = "";
+
+        printValues(fromAnd, beforeAnd, authorId, liveLibId, currentPage, urlAddition, url);
 
         AuthorBookPagesDao abpd = ParserApplication.context.getBean(AuthorBookPagesDao.class);
         System.out.println(abpd.count());
+
         AuthorBookPages authorBookPages = abpd.findFirstByOrderByAuthorIdDesc();
         if (abpd.count() != 0) {
             authorId = authorBookPages.getAuthorId();
@@ -141,9 +146,10 @@ public class LiveLib {
                 liveLibId = authorBookPages.getAuthorLiveLibId();
             }
         }
-        System.out.println("authorId: " + authorId);
-        System.out.println("liveLibId: " + liveLibId);
 
+        printValues(fromAnd, beforeAnd, authorId, liveLibId, currentPage, urlAddition, url);
+
+/*
         List<String> urlAdd = new ArrayList<>();
         urlAdd.add("works");
         urlAdd.add("alphabet");
@@ -199,6 +205,15 @@ public class LiveLib {
         } catch (ArrayIndexOutOfBoundsException ex) {
             System.out.println("Not next page");
         }
-    }
 */
+    }
+
+    private void printValues(Long fromAnd, Long beforeAnd, Long authorId, Long liveLibId, Long currentPage, String urlAddition, String url) {
+        System.out.println("fromAnd: " + fromAnd + " | " + "beforeAnd: " + beforeAnd);
+        System.out.println("authorId: " + authorId);
+        System.out.println("liveLibId: " + liveLibId);
+        System.out.println("currentPage: " + currentPage);
+        System.out.println("urlAddition: " + urlAddition);
+        System.out.println("url: " + url);
+    }
 }

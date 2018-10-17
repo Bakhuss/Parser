@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import ru.bakhuss.parser.parser.LiveLib;
 
 @SpringBootApplication
 public class ParserApplication {
@@ -17,6 +18,6 @@ public class ParserApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ParserApplication.class, args);
-//        new LiveLib().getBookHtml();
+        new LiveLib().getBookBaseUrl(1L, 50L);
     }
 }
