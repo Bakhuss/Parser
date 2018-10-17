@@ -6,15 +6,11 @@ import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.bakhuss.parser.ParserApplication;
-import ru.bakhuss.parser.dao.AuthorBookPagesDao;
 import ru.bakhuss.parser.dao.AuthorDao;
 import ru.bakhuss.parser.model.Author;
-import ru.bakhuss.parser.model.AuthorBookPages;
 import ru.bakhuss.parser.service.AuthorService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LiveLib {
     private final Logger log = LoggerFactory.getLogger(LiveLib.class);
@@ -127,12 +123,12 @@ public class LiveLib {
         a.setHtml(null);
         return a;
     }
-
+/*
     public void getBookHtml() {
 
         Long authorId = 1L;
         Long liveLibId = 1L;
-        Long page = 1L;
+        Long currentPage = 1L;
         String urlAddition = "works";
         String url;
 
@@ -155,7 +151,7 @@ public class LiveLib {
         url = "https://www.livelib.ru/author/"
                 + liveLibId + "/"
                 + urlAddition
-                + "/listview/smalllist/~" + page;
+                + "/listview/smalllist/~" + currentPage;
         System.out.println(url);
 
         try {
@@ -172,7 +168,7 @@ public class LiveLib {
                 if (!authorBookPages.getCheckAllPages()) {
                     writer = authorBookPages.getAuthorLiveLibId();
                     urlAddition = authorBookPages.getUrlAddition();
-                    page = authorBookPages.getCurrentPage() + 1;
+                    currentPage = authorBookPages.getCurrentPage() + 1;
                 }
 
 //            AuthorDao authorDao = ParserApplication.context.getBean(AuthorDao.class);
@@ -189,7 +185,7 @@ public class LiveLib {
 
 
         } catch (HttpStatusException ex) {
-            log.error("id: " + page + "; status code: " + ex.getStatusCode());
+            log.error("id: " + currentPage + "; status code: " + ex.getStatusCode());
             if (ex.getStatusCode() == 503) {
                 log.error("Wait 5 min");
                 try {
@@ -204,4 +200,5 @@ public class LiveLib {
             System.out.println("Not next page");
         }
     }
+*/
 }
