@@ -110,10 +110,15 @@ public class LiveLib {
                         i--;
                     }
                 }
-            } catch (IOException e) {
-                log.error("IOException error" + e);
+            } catch (Exception e) {
+                log.error("Exception error: " + e);
+                log.error("Wait 5 min");
+                try {
+                    Thread.sleep(300000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
                 i--;
-                continue;
             }
         }
         log.info("end id: " + authorDao.findFirstByOrderByIdDesc().getId().toString());
