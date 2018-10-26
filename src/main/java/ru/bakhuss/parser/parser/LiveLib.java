@@ -138,6 +138,8 @@ public class LiveLib {
 
         AuthorBookPagesDao abpd = ParserApplication.context.getBean(AuthorBookPagesDao.class);
         System.out.println(abpd.count());
+        AuthorDao authorDao = ParserApplication.context.getBean(AuthorDao.class);
+        System.out.println(authorDao.count());
 
         AuthorBookPages authorBookPages = abpd.findFirstByOrderByAuthorIdDesc();
         if (abpd.count() != 0) {
@@ -209,11 +211,11 @@ public class LiveLib {
     }
 
     private void printValues(Long fromAnd, Long beforeAnd, Long authorId, Long liveLibId, Long currentPage, String urlAddition, String url) {
-        System.out.println("fromAnd: " + fromAnd + " | " + "beforeAnd: " + beforeAnd);
-        System.out.println("authorId: " + authorId);
-        System.out.println("liveLibId: " + liveLibId);
-        System.out.println("currentPage: " + currentPage);
-        System.out.println("urlAddition: " + urlAddition);
-        System.out.println("url: " + url);
+        log.info("fromAnd: " + fromAnd + " | " + "beforeAnd: " + beforeAnd);
+        log.info("authorId: " + authorId);
+        log.info("liveLibId: " + liveLibId);
+        log.info("currentPage: " + currentPage);
+        log.info("urlAddition: " + urlAddition);
+        log.info("url: " + url);
     }
 }

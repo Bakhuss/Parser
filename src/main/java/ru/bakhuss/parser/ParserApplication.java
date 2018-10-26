@@ -18,6 +18,11 @@ public class ParserApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ParserApplication.class, args);
+//        Scanner sc = new Scanner(System.in);
+//        System.out.println("fromAnd: ");
+//        Long fromAnd = sc.nextLong();
+//        System.out.println("beforeAnd: ");
+//        Long beforeAnd = sc.nextLong();
         new LiveLib().getBookBaseUrl(1L, 50L);
     }
 }
