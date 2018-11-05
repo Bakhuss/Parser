@@ -23,6 +23,6 @@ public class ParserApplication {
 //        Long fromAnd = sc.nextLong();
 //        System.out.println("beforeAnd: ");
 //        Long beforeAnd = sc.nextLong();
-        new LiveLib().getBookBaseUrl(1L, 50L);
+        new LiveLib().getBookBaseUrl(1L, 1L);
     }
 }
