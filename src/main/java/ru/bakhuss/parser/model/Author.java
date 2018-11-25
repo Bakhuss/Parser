@@ -28,7 +28,7 @@ public class Author {
     @Column(name = "base_url")
     private String baseUrl;
 
-    @Column
+    @Column(length = 200000)
     private String html;
 
 
