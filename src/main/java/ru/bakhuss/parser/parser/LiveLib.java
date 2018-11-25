@@ -194,6 +194,8 @@ public class LiveLib {
             log.info(String.valueOf(doc.html().length()));
             FileOutputStream fos = new FileOutputStream(new File("html/author.html"));
             fos.write(doc.html().getBytes(StandardCharsets.UTF_8));
+            fos.flush();
+            fos.close();
 //            String[] locUrl = doc.location().split("/");
 //            System.out.println(doc.baseUri());
 //            String nextPage = doc.getElementsByAttributeValueContaining("id", "list-page-next")
