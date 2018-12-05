@@ -3,19 +3,20 @@ package ru.bakhuss.parser.parser;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.bakhuss.parser.ParserApplication;
 import ru.bakhuss.parser.dao.AuthorBookPagesDao;
 import ru.bakhuss.parser.dao.AuthorDao;
+import ru.bakhuss.parser.dao.BookDao;
 import ru.bakhuss.parser.model.Author;
 import ru.bakhuss.parser.model.AuthorBookPages;
+import ru.bakhuss.parser.model.Book;
 import ru.bakhuss.parser.service.AuthorService;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,7 +133,6 @@ public class LiveLib {
     }
 
     public void getBookBaseUrl(Long fromAnd, Long beforeAnd) {
-
         Long authorId = 1L;
         Long liveLibId = 1L;
         Long currentPage = 1L;
@@ -147,12 +147,12 @@ public class LiveLib {
         System.out.println(authorDao.count());
 
         AuthorBookPages authorBookPages = abpd.findFirstByOrderByAuthorIdDesc();
-        if (abpd.count() != 0) {
-            authorId = authorBookPages.getAuthorId();
-            if (!authorBookPages.getCheckAllPages()) {
-                liveLibId = authorBookPages.getAuthorLiveLibId();
-            }
-        }
+//        if (abpd.count() != 0) {
+//            authorId = authorBookPages.getAuthorId();
+//            if (!authorBookPages.getCheckAllPages()) {
+//                liveLibId = authorBookPages.getAuthorLiveLibId();
+//            }
+//        }
 
         printValues(fromAnd, beforeAnd, authorId, liveLibId, currentPage, urlAddition, url);
 
@@ -164,43 +164,38 @@ public class LiveLib {
         url = "https://www.livelib.ru/author/"
                 + liveLibId + "/"
                 + urlAddition
-                + "/listview/smalllist/~" + currentPage;
+                + "/listview/smalllist/~"
+                + currentPage;
         System.out.println(url);
 
         printValues(fromAnd, beforeAnd, authorId, liveLibId, currentPage, urlAddition, url);
 
         try {
-////            AuthorBookPagesDao abpd = ParserApplication.context.getBean(AuthorBookPagesDao.class);
-//            System.out.println(abpd.count());
-////            AuthorBookPages authorBookPages = abpd.findFirstByOrderByAuthorIdDesc();
-//            if (abpd.count() != 0) {
-//                authorId = authorBookPages.getAuthorId();
-//            }
-//            System.out.println("authorId: " + authorId);
-//
-//            if (authorBookPages != null)
-//                if (!authorBookPages.getCheckAllPages()) {
-//                    writer = authorBookPages.getAuthorLiveLibId();
-//                    urlAddition = authorBookPages.getUrlAddition();
-//                    currentPage = authorBookPages.getCurrentPage() + 1;
-//                }
+            AuthorDao ad = ParserApplication.context.getBean(AuthorDao.class);
+            Document document = Jsoup.connect(url).get();
+            System.out.println("title: " + document.title());
+            System.out.println("size: " + document.html().length());
 
-//            AuthorDao authorDao = ParserApplication.context.getBean(AuthorDao.class);
-//            System.out.println("count: " + authorDao.count());
-//            System.out.println(authorDao.find(92L).getLiveLibId());
+            Elements booksUrls = document.getElementsByClass("brow-book-name");
+            System.out.println("booksUrls size: " + booksUrls.size());
+            BookDao bd = ParserApplication.context.getBean(BookDao.class);
+            for (Element e : booksUrls) {
+                String href = e.attr("href");
+                System.out.println("string: " + href);
+                Book book = new Book();
+                book.setBaseUrl(href);
+                String bookLiveLibId = href.split("/")[2].split("-")[0];
+                book.setLiveLibId(Long.parseLong(bookLiveLibId));
+                Book newBook = bd.save(book);
+            }
 
+            String[] locUrl = document.location().split("/");
+            System.out.println(document.baseUri());
+            String nextPage = document
+                    .getElementsByAttributeValueContaining("id", "list-page-next")
+                    .attr("id");
+            System.out.println("nextPage: " + nextPage.split("-")[4]);
 
-            Document doc = Jsoup.connect(url).get();
-            log.info(String.valueOf(doc.html().length()));
-            FileOutputStream fos = new FileOutputStream(new File("html/author.html"));
-            fos.write(doc.html().getBytes(StandardCharsets.UTF_8));
-            fos.flush();
-            fos.close();
-//            String[] locUrl = doc.location().split("/");
-//            System.out.println(doc.baseUri());
-//            String nextPage = doc.getElementsByAttributeValueContaining("id", "list-page-next")
-//                    .attr("id");
-//            System.out.println("nextPage: " + nextPage.split("-")[4]);
 
 
         } catch (HttpStatusException ex) {

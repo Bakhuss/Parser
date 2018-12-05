@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import ru.bakhuss.parser.parser.LiveLib;
 
 @SpringBootApplication
 public class ParserApplication {
@@ -23,6 +22,6 @@ public class ParserApplication {
 //        Long fromAnd = sc.nextLong();
 //        System.out.println("beforeAnd: ");
 //        Long beforeAnd = sc.nextLong();
-        new LiveLib().getBookBaseUrl(1L, 1L);
+//        new LiveLib().getBookBaseUrl(1L, 1L);
     }
 }
