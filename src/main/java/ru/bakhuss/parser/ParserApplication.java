@@ -24,6 +24,5 @@ public class ParserApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(ParserApplication.class, args);
-//        new LiveLib().getAuthorHtml(1L, 2L);
     }
 }
