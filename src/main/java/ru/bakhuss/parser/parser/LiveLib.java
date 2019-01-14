@@ -31,6 +31,10 @@ public class LiveLib {
     }
 
     public void getAuthorHtml(Long fromAnd, Long beforeAnd) {
+        if (fromAnd > beforeAnd) {
+            System.out.println("fromAnd must be <= beforeAnd");
+            return;
+        }
         AuthorDao authorDao = ParserApplication.context.getBean(AuthorDao.class);
         for (Long i = fromAnd; i <= beforeAnd; i++) {
             if (authorDao.existsByLiveLibId(i)) {
