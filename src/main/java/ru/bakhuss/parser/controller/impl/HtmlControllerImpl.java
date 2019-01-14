@@ -20,9 +20,9 @@ public class HtmlControllerImpl implements HtmlController {
     public String getAuthorHtml(@RequestParam Long fromAnd,
                                 @RequestParam Long beforeAnd) {
         new Thread(() -> {
-            log.info("start: fromAnd = " + fromAnd + " beforeAnd: " + beforeAnd);
+            log.info("start: fromAnd = " + fromAnd + " beforeAnd = " + beforeAnd);
             new LiveLib().getAuthorHtml(fromAnd, beforeAnd);
-            log.info("end");
+            log.info("end: fromAnd = " + fromAnd + " beforeAnd = " + beforeAnd);
         }).start();
         return "start";
     }
